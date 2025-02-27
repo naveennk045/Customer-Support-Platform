@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --secondary: #6b7280;
+            --background: #f9fafb;
+            --white: #ffffff;
+            --success: #10b981;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--white);
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 2px 4px var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .profile-icon:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 200px;
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 101;
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+        .profile-menu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .profile-menu-item:hover {
+            background-color: var(--background);
+        }
+
+        .profile-menu-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .profile-menu-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            border-top: 1px solid var(--border);
+            color: #ef4444;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            height: calc(100vh - 70px);
+            width: 250px;
+            background-color: var(--white);
+            box-shadow: 2px 0 4px var(--shadow);
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            border-left-color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+        }
+
+        .dashboard-title {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .dashboard-cards {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            margin-left: 200px;
+            margin-right:200px;
+        }
+
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px var(--shadow);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var (--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background-color: rgba(37, 99, 235, 0.1);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .card-body {
+            flex: 1;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background-color: var(--white);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background-color: var(--white);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border);
+            background-color: var(--white);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--background);
+        }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--secondary);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Iframe section */
+        .iframe-container {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 999;
+        }
+
+        .widget-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .widget-toggle:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background-color: var(--white);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 24px var(--shadow);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chat-window.show {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-close {
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+        }
+
+        .message.incoming {
+            align-self: flex-start;
+            background-color: var(--background);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .message.outgoing {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: var(--white);
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            background-color: var(--background);
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .send-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Card hover effects */
+        .dashboard-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--shadow);
+        }
+
+        /* Copy button for iframe embed code */
+        .copy-btn {
+            padding: 0.5rem 0.75rem;
+            background-color: var(--primary-light);
+            color: var(--white);
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--success);
+            color: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Badge indicator */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--success);
+            color: var (--white);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: none;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: 2px 0 4px var(--shadow);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+        }
+
+        /* Menu toggle for mobile */
+        .menu-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;f
+            height: 40px;
+            border-radius: 0.375rem;
+            background-color: var(--background);
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .chat-window {
+                width: 100%;
+                right: 0;
+                bottom: 0;
+                height: 100%;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-message">Successfully saved!</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div style="display: flex; align-items: center;">
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo">
+                <i class="fas fa-robot logo-icon"></i>
+                <span>CSAP Hub</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-target="db-integration-card">Database Integration</a>
+            <a href="#" class="nav-link" data-target="twilio-integration-card">Twilio Setup</a>
+            <a href="#" class="nav-link" data-target="iframe-integration-card">Iframe Integration</a>
+            <a href="#" class="nav-link" data-target="chatbot-widget-card">Chatbot Widget</a>
+        </div>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <div class="profile-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-menu" id="profile-menu">
+                <a href="#" class="profile-menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="profile-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="profile-menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+                <a href="#" class="profile-menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-item active" data-target="db-integration-card">
+                <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                <span>Database Integration</span>
+            </a>
+            <a href="#" class="sidebar-item" data-target="twilio-integration-card">
+                <i class="fas fa-phone sidebar-icon"></i>
+                <span>Twilio Setup</span>
+            </a>
+            <a href="#" class="sidebar-item" data-target="iframe-integration-card">
+                <i class="fas fa-code sidebar-icon"></i>
+                <span>Iframe Integration</span>
+            </a>
+            <a href="#" class="sidebar-item" data-target="chatbot-widget-card">
+                <i class="fas fa-robot sidebar-icon"></i>
+                <span>Chatbot Widget</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="dashboard-title">CSAP Dashboard</h1>
+
+        <div class="dashboard-cards">
+            <!-- Database Integration Card -->
+            <div class="dashboard-card" id="db-integration-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        Database Integration
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="db-credentials">Database Credentials</div>
+                        <div class="tab" data-tab="excel-upload">Excel Upload</div>
+                    </div>
+                    
+                    <div class="tab-content" id="db-credentials">
+                        <form id="db-form">
+                            <div class="form-group">
+                                <label class="form-label" for="db-type">Database Type</label>
+                                <select class="form-select" id="db-type">
+                                    <option value="mysql">MySQL</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="mongodb">MongoDB</option>
+                                    <option value="sqlserver">SQL Server</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="db-host">Host</label>
+                                <input type="text" class="form-input" id="db-host" placeholder="e.g., localhost or db.example.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="db-port">Port</label>
+                                <input type="text" class="form-input" id="db-port" placeholder="e.g., 3306 for MySQL">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="db-name">Database Name</label>
+                                <input type="text" class="form-input" id="db-name" placeholder="Your database name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="db-username">Username</label>
+                                <input type="text" class="form-input" id="db-username" placeholder="Database username">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="db-password">Password</label>
+                                <input type="password" class="form-input" id="db-password" placeholder="Database password">
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-primary" id="db-connect-btn">
+                                    <i class="fas fa-plug"></i>
+                                    Connect Database
+                                </button>
+                                <button type="button" class="btn btn-outline" id="db-test-btn">
+                                    <i class="fas fa-vial"></i>
+                                    Test Connection
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-content" id="excel-upload" style="display: none;">
+                        <form id="excel-form">
+                            <div class="form-group">
+                                <label class="form-label" for="excel-file">Upload Excel File</label>
+                                <input type="file" class="form-input" id="excel-file" accept=".xlsx, .xls, .csv">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Data Mapping</label>
+                                <div style="margin-top: 0.5rem;">
+                                    <label class="switch">
+                                        <input type="checkbox" id="auto-mapping">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span style="margin-left: 0.5rem;">Auto-detect columns</span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-primary" id="excel-upload-btn">
+                                    <i class="fas fa-upload"></i>
+                                    Upload & Process
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Twilio Integration Card -->
+            <div class="dashboard-card" id="twilio-integration-card" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        Twilio Integration
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form id="twilio-form">
+                        <div class="form-group">
+                            <label class="form-label" for="twilio-account-sid">Account SID</label>
+                            <input type="text" class="form-input" id="twilio-account-sid" placeholder="Enter your Twilio Account SID">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="twilio-auth-token">Auth Token</label>
+                            <input type="password" class="form-input" id="twilio-auth-token" placeholder="Enter your Twilio Auth Token">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="twilio-phone">Twilio Phone Number</label>
+                            <input type="text" class="form-input" id="twilio-phone" placeholder="+1234567890">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Enable WhatsApp</label>
+                            <div style="margin-top: 0.5rem;">
+                                <label class="switch">
+                                    <input type="checkbox" id="whatsapp-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <span style="margin-left: 0.5rem;">Enable WhatsApp integration</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" id="twilio-save-btn">
+                                <i class="fas fa-save"></i>
+                                Save Credentials
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Iframe Integration Card -->
+            <div class="dashboard-card" id="iframe-integration-card" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        Iframe Integration
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Your Website Embed Code</label>
+                        <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; position: relative;">
+                            <pre style="margin: 0; overflow-x: auto; font-family: monospace; font-size: 0.875rem;"><code>&lt;iframe src="https://your-domain.com/chatbot-widget" width="100%" height="600px" frameborder="0"&gt;&lt;/iframe&gt;</code></pre>
+                            <button class="copy-btn" style="position: absolute; top: 0.5rem; right: 0.5rem;" id="copy-iframe-btn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <label class="form-label">Preview</label>
+                    <div class="iframe-container">
+                        <iframe src="/api/placeholder/800/400" alt="Sample iframe preview"></iframe>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" id="customize-iframe-btn">
+                            <i class="fas fa-palette"></i>
+                            Customize Widget
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chatbot Widget Card -->
+            <div class="dashboard-card" id="chatbot-widget-card" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        Chatbot Widget
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form id="chatbot-form">
+                        <div class="form-group">
+                            <label class="form-label" for="chatbot-name">Chatbot Name</label>
+                            <input type="text" class="form-input" id="chatbot-name" placeholder="Enter your Chatbot Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="chatbot-greeting">Greeting Message</label>
+                            <input type="text" class="form-input" id="chatbot-greeting" placeholder="Enter the Greeting Message">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="chatbot-theme">Theme Color</label>
+                            <input type="color" class="form-input" id="chatbot-theme">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" id="chatbot-save-btn">
+                                <i class="fas fa-save"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const cards = document.querySelectorAll('.dashboard-card');
+
+            function showCard(targetId) {
+                cards.forEach(card => {
+                    card.style.display = card.id === targetId ? 'block' : 'none';
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    showCard(targetId);
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    showCard(targetId);
+                    sidebarItems.forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Show the first card by default
+            showCard('db-integration-card');
+
+            // Save Twilio Credentials
+            document.getElementById('twilio-save-btn').addEventListener('click', function () {
+                const accountSid = document.getElementById('twilio-account-sid').value;
+                const authToken = document.getElementById('twilio-auth-token').value;
+                const phoneNumber = document.getElementById('twilio-phone').value;
+                const enableWhatsApp = document.getElementById('whatsapp-toggle').checked;
+
+                fetch('http://127.0.0.1:8000/api/save-twilio-credentials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        accountSid,
+                        authToken,
+                        phoneNumber,
+                        enableWhatsApp
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('notification-message').textContent = 'Twilio credentials saved successfully!';
+                        document.getElementById('notification').classList.add('show');
+                        setTimeout(() => {
+                            document.getElementById('notification').classList.remove('show');
+                        }, 3000);
+                    } else {
+                        alert('Failed to save Twilio credentials.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving Twilio credentials.');
+                });
+            });
+
+            // Save Database Credentials
+            document.getElementById('db-connect-btn').addEventListener('click', function () {
+                const dbType = document.getElementById('db-type').value;
+                const dbHost = document.getElementById('db-host').value;
+                const dbPort = document.getElementById('db-port').value;
+                const dbName = document.getElementById('db-name').value;
+                const dbUsername = document.getElementById('db-username').value;
+                const dbPassword = document.getElementById('db-password').value;
+
+                fetch('http://127.0.0.1:8000/api/save-db-credentials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        dbType,
+                        dbHost,
+                        dbPort,
+                        dbName,
+                        dbUsername,
+                        dbPassword
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('notification-message').textContent = 'Database connected successfully!';
+                        document.getElementById('notification').classList.add('show');
+                        setTimeout(() => {
+                            document.getElementById('notification').classList.remove('show');
+                        }, 3000);
+                    } else {
+                        alert('Failed to connect to the database.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while connecting to the database.');
+                });
+            });
+
+            // Save Chatbot Settings
+            document.getElementById('chatbot-save-btn').addEventListener('click', function () {
+                const chatbotName = document.getElementById('chatbot-name').value;
+                const chatbotGreeting = document.getElementById('chatbot-greeting').value;
+                const chatbotTheme = document.getElementById('chatbot-theme').value;
+
+                fetch('http://127.0.0.1:8000/api/save-chatbot-settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chatbotName,
+                        chatbotGreeting,
+                        chatbotTheme
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('notification-message').textContent = 'Chatbot settings saved successfully!';
+                        document.getElementById('notification').classList.add('show');
+                        setTimeout(() => {
+                            document.getElementById('notification').classList.remove('show');
+                        }, 3000);
+                    } else {
+                        alert('Failed to save chatbot settings.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving chatbot settings.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

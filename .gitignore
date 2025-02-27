@@ -1,0 +1,7 @@
+backend/__pycache__
+
+whatsapp-integration/.venv/
+whatsapp-integration/.env
+whatsapp-integration/__pycache__/
+whatsapp-integration/.vscode/
+whatsapp-integration/.idea/

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIChatSupport - Sign In/Sign Up</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #6b7280;
+            --background: #f9fafb;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #10b981;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--shadow);
+            overflow: hidden;
+        }
+
+        .info-section {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 45%;
+        }
+
+        .info-section h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .features {
+            margin-top: 1rem;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 0.75rem;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            padding: 3rem 2rem;
+            width: 55%;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group .error {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-group.error-show input {
+            border-color: var(--error);
+        }
+
+        .form-group.error-show .error {
+            display: block;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+        }
+
+        .divider::before {
+            margin-right: 1rem;
+        }
+
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background-color: var(--white);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .social-btn:hover {
+            background-color: var(--background);
+        }
+
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .success-message {
+            color: var(--success);
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 6px;
+            background-color: rgba(16, 185, 129, 0.1);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .info-section, .form-section {
+                width: 100%;
+            }
+            .info-section {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-section">
+            <h1>Customer Support Agent Platform</h1>
+            <p>Empower your business with intelligent customer support. Create AI Agent tailored to your specific needs and enhance customer satisfaction.</p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Easy-to-use AI- Agent builder</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Seamless website integration</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">24/7 automated customer support</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">DataBase and WhatsApp Integration</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your credentials to access your account</p>
+                </div>
+                <div class="tabs">
+                    <div class="tab active" id="signin-tab">Sign In</div>
+                    <div class="tab" id="signup-tab">Sign Up</div>
+                </div>
+                
+                <!-- Sign In Form -->
+                <div class="form-content active" id="signin-form">
+                    <div class="form-group">
+                        <label for="signin-email">Email</label>
+                        <input type="email" id="signin-email" placeholder="name@company.com">
+                        <div class="error">Please enter a valid email address</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signin-password">Password</label>
+                        <input type="password" id="signin-password" placeholder="••••••••">
+                        <div class="error">Password must be at least 8 characters</div>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                    <button class="btn btn-primary" id="signin-btn">Sign In</button>
+                    
+                    <div class="divider">or continue with</div>
+                    
+                    <div class="social-login">
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#4285F4">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                            </svg>
+                        </button>
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </button>
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#000000">
+                                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.48C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="form-footer">
+                        Don't have an account? <a href="#" id="show-signup">Sign up</a>
+                    </div>
+                    
+                    <div class="success-message" id="signin-success">
+                        Successfully signed in! Redirecting to dashboard...
+                    </div>
+                </div>
+                
+                <!-- Sign Up Form -->
+                <div class="form-content" id="signup-form">
+                    <div class="form-group">
+                        <label for="company-name">Company Name</label>
+                        <input type="text" id="company-name" placeholder="Your Company Name">
+                        <div class="error">Please enter your company name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" placeholder="name@company.com">
+                        <div class="error">Please enter a valid email address</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="••••••••">
+                        <div class="error">Password must be at least 8 characters</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="••••••••">
+                        <div class="error">Passwords do not match</div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="signup-btn">Create Account</button>
+                    
+                    <div class="divider">or continue with</div>
+                    
+                    <div class="social-login">
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#4285F4">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                            </svg>
+                        </button>
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </button>
+                        <button class="social-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#000000">
+                                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.48C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="form-footer">
+                        Already have an account? <a href="#" id="show-signin">Sign in</a>
+                    </div>
+                    
+                    <div class="success-message" id="signup-success">
+                        Account created successfully! You can now sign in.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    // Updated JavaScript for authentication with FastAPI endpoints
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching
+    const signinTab = document.getElementById('signin-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const showSignup = document.getElementById('show-signup');
+    const showSignin = document.getElementById('show-signin');
+    
+    function switchToSignin() {
+        signinTab.classList.add('active');
+        signupTab.classList.remove('active');
+        signinForm.classList.add('active');
+        signupForm.classList.remove('active');
+        document.querySelector('.form-header h2').textContent = 'Welcome Back';
+        document.querySelector('.form-header p').textContent = 'Enter your credentials to access your account';
+    }
+    
+    function switchToSignup() {
+        signinTab.classList.remove('active');
+        signupTab.classList.add('active');
+        signinForm.classList.remove('active');
+        signupForm.classList.add('active');
+        document.querySelector('.form-header h2').textContent = 'Create an Account';
+        document.querySelector('.form-header p').textContent = 'Get started with your AI customer support journey';
+    }
+    
+    signinTab.addEventListener('click', switchToSignin);
+    signupTab.addEventListener('click', switchToSignup);
+    showSignup.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchToSignup();
+    });
+    showSignin.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchToSignin();
+    });
+    
+    // Form validation and submission
+    const signinBtn = document.getElementById('signin-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const signinEmail = document.getElementById('signin-email');
+    const signinPassword = document.getElementById('signin-password');
+    const signupEmail = document.getElementById('signup-email');
+    const signupPassword = document.getElementById('signup-password');
+    const confirmPassword = document.getElementById('confirm-password');
+    const companyName = document.getElementById('company-name');
+    const signinSuccess = document.getElementById('signin-success');
+    const signupSuccess = document.getElementById('signup-success');
+    
+    // API endpoints
+    const API_BASE_URL = 'http://127.0.0.1:8000/api';
+    const LOGIN_ENDPOINT = `${API_BASE_URL}/login`;
+    const SIGNUP_ENDPOINT = `${API_BASE_URL}/signup`;
+    
+    function validateEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+    
+    function showError(input, message) {
+        const formGroup = input.parentElement;
+        formGroup.classList.add('error-show');
+        const error = formGroup.querySelector('.error');
+        error.textContent = message;
+    }
+    
+    function clearError(input) {
+        const formGroup = input.parentElement;
+        formGroup.classList.remove('error-show');
+    }
+    
+    function validateSignin() {
+        let isValid = true;
+        
+        clearError(signinEmail);
+        clearError(signinPassword);
+        
+        if (!signinEmail.value.trim()) {
+            showError(signinEmail, 'Email is required');
+            isValid = false;
+        } else if (!validateEmail(signinEmail.value.trim())) {
+            showError(signinEmail, 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        if (!signinPassword.value.trim()) {
+            showError(signinPassword, 'Password is required');
+            isValid = false;
+        } else if (signinPassword.value.length < 8) {
+            showError(signinPassword, 'Password must be at least 8 characters');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    function validateSignup() {
+        let isValid = true;
+        
+        clearError(companyName);
+        clearError(signupEmail);
+        clearError(signupPassword);
+        clearError(confirmPassword);
+        
+        if (!companyName.value.trim()) {
+            showError(companyName, 'Company name is required');
+            isValid = false;
+        }
+        
+        if (!signupEmail.value.trim()) {
+            showError(signupEmail, 'Email is required');
+            isValid = false;
+        } else if (!validateEmail(signupEmail.value.trim())) {
+            showError(signupEmail, 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        if (!signupPassword.value.trim()) {
+            showError(signupPassword, 'Password is required');
+            isValid = false;
+        } else if (signupPassword.value.length < 8) {
+            showError(signupPassword, 'Password must be at least 8 characters');
+            isValid = false;
+        }
+        
+        if (!confirmPassword.value.trim()) {
+            showError(confirmPassword, 'Please confirm your password');
+            isValid = false;
+        } else if (confirmPassword.value !== signupPassword.value) {
+            showError(confirmPassword, 'Passwords do not match');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    // Function to handle API errors
+    function handleApiError(error, formElement) {
+        console.error('API Error:', error);
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error';
+        errorMessage.style.color = 'var(--error)';
+        errorMessage.style.textAlign = 'center';
+        errorMessage.style.marginTop = '1rem';
+        errorMessage.textContent = error.message || 'An error occurred. Please try again.';
+        
+        // Remove any existing error message
+        const existingError = formElement.querySelector('.api-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        errorMessage.classList.add('api-error');
+        formElement.appendChild(errorMessage);
+    }
+    
+    signinBtn.addEventListener('click', async function() {
+        if (validateSignin()) {
+            signinBtn.disabled = true;
+            signinBtn.textContent = 'Signing in...';
+            
+            const loginData = {
+                email: signinEmail.value.trim(),
+                password: signinPassword.value
+            };
+            
+            try {
+                const response = await fetch(LOGIN_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                    // Removed: credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Login failed. Please check your credentials.');
+                }
+                
+                const data = await response.json();
+                
+                if (data.access_token) {
+                    localStorage.setItem('token', data.access_token);
+                }
+                
+                signinSuccess.style.display = 'block';
+                signinSuccess.textContent = 'Successfully signed in! Redirecting to dashboard...';
+                
+                setTimeout(() => {
+                    window.location.href = "V:/Projects/Customer-Support-Platform/frontend/static/DashBoard/DashBoard.html";
+                }, 1500);
+                
+            } catch (error) {
+                handleApiError(error, signinForm);
+                signinBtn.disabled = false;
+                signinBtn.textContent = 'Sign In';
+            }
+        }
+    });
+    
+    // Sign up form submission
+    signupBtn.addEventListener('click', async function() {
+        if (validateSignup()) {
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating account...';
+            
+            const signupData = {
+                company_name: companyName.value.trim(),
+                email: signupEmail.value.trim(),
+                password: signupPassword.value
+            };
+            
+            try {
+                const response = await fetch(SIGNUP_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(signupData)
+                    // Removed: credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Registration failed. Please try again.');
+                }
+                
+                const data = await response.json();
+                
+                signupSuccess.style.display = 'block';
+                signupSuccess.textContent = 'Account created successfully! You can now sign in.';
+                
+                companyName.value = '';
+                signupEmail.value = '';
+                signupPassword.value = '';
+                confirmPassword.value = '';
+                
+                setTimeout(() => {
+                    switchToSignin();
+                    signupBtn.disabled = false;
+                    signupBtn.textContent = 'Create Account';
+                }, 2000);
+                
+            } catch (error) {
+                handleApiError(error, signupForm);
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        }
+    });
+    
+    
+    // Social login handlers (placeholders for now)
+    const socialButtons = document.querySelectorAll('.social-btn');
+    socialButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            // In a real implementation, you would redirect to the OAuth provider or handle social login
+            alert('Social login integration would go here');
+        });
+    });
+    
+    // Clear errors on input
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            clearError(input);
+            signinSuccess.style.display = 'none';
+            signupSuccess.style.display = 'none';
+            
+            // Also remove any API error messages
+            const form = input.closest('.form-content');
+            const apiError = form.querySelector('.api-error');
+            if (apiError) {
+                apiError.remove();
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
