@@ -1,5 +1,5 @@
 from twilio.rest import Client
-from config import TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_NUMBER
+from apis.config import TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_NUMBER
 
 client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 

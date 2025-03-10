@@ -10,16 +10,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Adjust to your frontend URL
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Add CORS middleware to allow frontend communication
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Adjust this in production
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,12 +19,11 @@ app.add_middleware(
 # Database configuration
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'root',  # Replace with your MySQL username
-    'password': '7261',  # Replace with your MySQL password
+    'user': 'root',  
+    'password': '7261', 
     'database': 'demo_app'
 }
 
-# Pydantic models for request validation
 class LoginData(BaseModel):
     email: str
     password: str
@@ -62,12 +52,12 @@ class ChatbotSettings(BaseModel):
     chatbotGreeting: str
     chatbotTheme: str
 
-# Database connection helper
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
 
 # Endpoints
-@app.post("/api/login")  # LOGIN_ENDPOINT
+
+@app.post("/api/login")  
 async def login(login_data: LoginData):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -84,12 +74,11 @@ async def login(login_data: LoginData):
         cursor.close()
         conn.close()
 
-@app.post("/api/signup")  # SIGNUP_ENDPOINT
+@app.post("/api/signup") 
 async def signup(signup_data: SignupData):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        # Check if email already exists
         cursor.execute("SELECT id FROM users WHERE email = %s", (signup_data.email,))
         if cursor.fetchone():
             raise HTTPException(status_code=400, detail="Email already registered")
@@ -168,5 +157,9 @@ async def save_chatbot_settings(settings: ChatbotSettings):
     finally:
         cursor.close()
         conn.close()
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+
 
 # Run the app: uvicorn main:app --reload
